@@ -17,19 +17,20 @@ void printregList(course *cdetails[], int noc)
     for (int i = 0; i < noc; i++)
     {
         node *t = cdetails[i]->regList->next;
+        // printf("done 1");
         if (t == NULL)
             printf("None");
         else
         {
-            printf("%s ", &t->name);
-            // t = t->next;
-            while (t->next != NULL)
+            // printf("done 2");
+            while (t != NULL)
             {
-                t = t->next;
+                // printf("done 5");
                 printf("%s ", &t->name);
-                // printf(" Name ");
+                t = t->next;
             }
         }
+        // printf("done 3");
         printf("\n");
     }
 }
@@ -43,19 +44,17 @@ void printwaitList(course *cdetails[], int noc)
             printf("None");
         else
         {
-            printf("%s ", &t->name);
-            while (t->next != NULL)
+            while (t != NULL)
             {
-                t = t->next;
                 printf("%s ", &t->name);
+                t = t->next;
             }
         }
         printf("\n");
     }
 }
 
-//--------------------------------------------------------------
-int main()
+void P1B_WAP()
 {
     int noc; // no of course
     printf("No of course?: ");
@@ -66,52 +65,39 @@ int main()
         courses[i] = (course *)malloc(sizeof(course));
     }
 
-    node *lhead = (node *)malloc(sizeof(node));
-    queue *qhead = (queue *)malloc(sizeof(queue));
-
     for (int i = 0; i < noc; i++)
     {
         printf(" Course: CODE, NAME, CREDIT, LIMIT %d : ", i + 1);
         scanf("%s %s %d %d", courses[i]->code, courses[i]->name, &courses[i]->credits, &courses[i]->maxLimit);
-        courses[i]->regList = lhead;
-        lhead = NULL;
-        courses[i]->waitList = qhead;
-        qhead = NULL;
+        courses[i]->regList = (node *)malloc(sizeof(node));
+        courses[i]->waitList = (queue *)malloc(sizeof(queue));
+        courses[i]->regList->next = NULL;
+        courses[i]->waitList->next = NULL;
     }
 
     int n, cno;
     char name[20];
+    node *lhead;
+    queue *qhead;
     while (1)
     {
-        printf("Register 1, Delete 2, Print student 3, Exit: any key ");
+        printf("\nRegister 1, Delete 2, Print student 3, Exit: 4-9,0 ");
         scanf("%d", &n);
         char yn[2];
         switch (n)
         {
         case 1:
-            printf("register student? (y/n): ");
-            scanf("%s", yn);
-            while (strcmp(yn, "y") == 0)
-            {
-
-                printf("name? , course no? ");
-                scanf(" %s %d", name, &cno);
-                lhead = courses[cno - 1]->regList;
-                qhead = courses[cno - 1]->waitList;
-                lhead->next = NULL;
-                qhead->next = NULL;
-                insert(lhead, qhead, courses[cno - 1]->maxLimit, name);
-                printf("New student? (y/n): ");
-                scanf("%s", yn);
-            }
+            printf("name? , course no? ");
+            scanf(" %s %d", name, &cno);
+            lhead = courses[cno - 1]->regList;
+            qhead = courses[cno - 1]->waitList;
+            insert(lhead, qhead, courses[cno - 1]->maxLimit, name);
             break;
         case 2:
-            printf("Delete => student name? course number?: ");
+            printf("\nDelete => student name? course number?: ");
             scanf("%s %d", name, &cno);
             lhead = courses[cno - 1]->regList;
             qhead = courses[cno - 1]->waitList;
-            lhead->next = NULL;
-            qhead->next = NULL;
             deleteS(lhead, qhead, name, courses[cno - 1]->maxLimit);
             break;
         case 3:
@@ -124,5 +110,11 @@ int main()
             exit(0);
         }
     }
+}
+
+//--------------------------------------------------------------
+int main()
+{
+    P1B_WAP();
     return 0;
 }
